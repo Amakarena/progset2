@@ -1,15 +1,18 @@
 # Let's use a single source file to upload the progset
 import numpy as np
 
-#specify the size of the matrix
-n = 4
+#n_0 from theoretical approach
+n_0 = 4
 
-#creates an n*n matrix 
-matrix = np.zeros((n, n), dtype=int)
-print(matrix)
+# creating an n*n matrix 
+# matrix = np.array((n, n), dtype=int)
+# print(matrix)
 
-# A and B are nxn matrices (how to handle odd case?)
-# def conventional(A, B):
+# A and B are nxn matrices (how to handle odd case? Add extra row
+# of 0s and column of 0s. Delete extras after calculation and before
+# output)
+def conventional(X, Y, n):
+    if n
 
 
 # def strassen(n_matrix):
