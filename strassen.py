@@ -13,35 +13,29 @@ import numpy as np
 # of 0s and column of 0s. Delete extras after calculation and before
 # output)
 def conventional(A, B):
+    # make lists
+    A = A.tolist()
+    B = B.tolist()
     # init output matrix
-    C = [[0 for l in range(len(A))] for m in range(len(A[0]))]
+    C = [[0 for _ in range(len(B[0]))] for _ in range(len(A))]
     # by row of A
     for i in range(len(A)):
         for j in range(len(B[0])):
             for k in range(len(B)):
                 # calculate C
                 C[i][j] += A[i][k] * B[k][j]
-    print(np.matrix(C))
+    return np.array(C)
+    # print(np.matrix(C))
 
+# A is a matrix
 def pad(A):
-    A = np.r_[A,[[0 for i in range(len(A))]]]
-    A = np.c_[A, [0 for i in range(len(A[0])+1)]]
-    return A
+    n = len(A)
+    padded_size = n + 1
+    padded = np.zeros((padded_size, padded_size), dtype=int)
+    padded[:n, :n] = A
+    return padded
 
-# got from stack
-def split_matrix(A):
-    # divide into two
-    upper = np.hsplit(np.vsplit(A, 2)[0], 2)
-    lower = np.hsplit(np.vsplit(A, 2)[1], 2)
-    # divide into four
-    upper_left = upper[0]
-    upper_right = upper[1]
-    lower_left = lower[0]
-    lower_right = lower[1]
-
-    return upper_left, upper_right, lower_left, lower_right
-    # print(np.matrix(A))
-def strassen(X, Y, n_0):
+def strassen(X, Y):
     n = len(X)
     # flag to remove padding after multiplication
     padded = False
@@ -49,14 +43,33 @@ def strassen(X, Y, n_0):
     if n % 2 != 0:
        X = pad(X)
        Y = pad(Y)
+       n += 1
        padded = True
 
+    # base case
+    if n <= 2:
+        Z = conventional(X, Y)
+        # removing excess 0s
+        if padded:
+            # delete last row and column
+            Z = Z[:-1, :-1]
+        return Z
+
     # split them
-    A, B, C, D = split_matrix(X)
-    E, F, G, H = split_matrix(Y)
+    # A, B, C, D = split_matrix(X)
+    # E, F, G, H = split_matrix(Y)
+    mid = n // 2
+    A = X[:mid, :mid]
+    B = X[:mid, mid:]
+    C = X[mid:, :mid]
+    D = X[mid:, mid:]
+    E = Y[:mid, :mid]
+    F = Y[:mid, mid:]
+    G = Y[mid:, :mid]
+    H = Y[mid:, mid:]
     
     # mini multiplications
-    p1 = strassen(A,(F-H))
+    p1 = strassen(A,np.subtract(F,H))
     p2 = strassen((A+B),H)
     p3 = strassen((C+D),E)
     p4 = strassen(D,(G-E))
@@ -71,14 +84,11 @@ def strassen(X, Y, n_0):
     LR = p1 - p3 + p5 + p7
 
     # stiching quads back together
-    Z = np.vstack((np.hstack((UL, UR)), np.hstack((LL, LR))))
+    Z = np.vstack((np.hstack((UL, UR)), np.hstack((LL, LR)))) 
 
-    # removing excess 0s
-    if padded:
-        # delete last row
-        Z = np.delete(Z, (len(Z)-1), 0)
-        # delete last column
-        Z = np.delete(Z, len(Z)-1, 1)
+    # remove padding
+    Z = Z[:-1, :-1]
+
     return Z
 
 
@@ -86,24 +96,23 @@ def strassen(X, Y, n_0):
 
 # ----- TESTS -----
 # coonventional
-X = np.array([[1,2],[3,4]])
-Y = np.array([[5,6],[7,8]])
+X = np.array([[1,2,3],[3,4,3],[1,2,3]])
+Y = np.array([[5,6,3],[7,8,3],[1,2,3]])
+# X = np.array([[1,2],[3,4]])
+# Y = np.array([[5,6],[7,8]])
 # print(conventional(X,Y))
 
 # padding
-D = [[1 for o in range(3)] for p in range(3)]
-D = pad(D)
+# D = [[1 for o in range(3)] for p in range(3)]
+# D = pad(D)
 
-# splitting
-a, b, c, d = split_matrix(D)
-print(np.matrix(b))
+# # splitting
+# a, b, c, d = split_matrix(D)
+# print(np.matrix(b))
 
-# stacking
-Z = np.vstack((np.hstack((a, b)), np.hstack((c, d))))
-print(np.matrix(Z))
+# # stacking
+# Z = np.vstack((np.hstack((a, b)), np.hstack((c, d))))
+# print(np.matrix(Z))
 
-# print(np.matrix(D))
-# print("Padded D")
-# D = np.r_[D,[[0,0,0]]]
-# D = np.c_[D, [0,0,0,0]]
-# print(np.matrix(D))
+# strassen
+print(strassen(X, Y))
