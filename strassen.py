@@ -21,14 +21,23 @@ def conventional(A, B):
             for k in range(len(B)):
                 # calculate C
                 C[i][j] += A[i][k] * B[k][j]
-    print(C)
+    print(np.matrix(C))
 
-X = np.array([[1,2],[3,4]])
-Y = np.array([[5,6],[7,8]])
-print(conventional(X,Y))
-
-# def strassen(n_matrix):
+# def strassen(A, B, n_0):
+#     C = 
 
 # def recursive_matrix_mult(n_matrix):
 
 # ----- TESTS -----
+# coonventional
+X = np.array([[1,2],[3,4]])
+Y = np.array([[5,6],[7,8]])
+print(conventional(X,Y))
+
+# padding
+D = [[1 for o in range(3)] for p in range(3)]
+print(np.matrix(D))
+print("Padded D")
+D = np.r_[D,[[0,0,0]]]
+D = np.c_[D, [0,0,0,0]]
+print(np.matrix(D))
