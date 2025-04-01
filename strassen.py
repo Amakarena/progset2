@@ -23,6 +23,23 @@ def conventional(A, B):
                 C[i][j] += A[i][k] * B[k][j]
     print(np.matrix(C))
 
+def pad(A):
+    A = np.r_[A,[[0 for i in range(len(A))]]]
+    A = np.c_[A, [0 for i in range(len(A[0])+1)]]
+    return A
+
+# got from stack
+def split_matrix(A):
+    upper = np.hsplit(np.vsplit(A, 2)[0], 2)
+    lower = np.hsplit(np.vsplit(A, 2)[1], 2)
+
+    upper_left = upper[0]
+    upper_right = upper[1]
+    lower_left = lower[0]
+    lower_right = lower[1]
+
+    return upper_left, upper_right, lower_left, lower_right
+    # print(np.matrix(A))
 # def strassen(A, B, n_0):
 #     C = 
 
@@ -36,8 +53,13 @@ print(conventional(X,Y))
 
 # padding
 D = [[1 for o in range(3)] for p in range(3)]
-print(np.matrix(D))
-print("Padded D")
-D = np.r_[D,[[0,0,0]]]
-D = np.c_[D, [0,0,0,0]]
-print(np.matrix(D))
+D = pad(D)
+
+a, b, c, d = split_matrix(D)
+print(np.matrix(b))
+
+# print(np.matrix(D))
+# print("Padded D")
+# D = np.r_[D,[[0,0,0]]]
+# D = np.c_[D, [0,0,0,0]]
+# print(np.matrix(D))
