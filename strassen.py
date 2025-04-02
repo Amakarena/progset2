@@ -27,7 +27,7 @@ def pad(A):
     padded[:n, :n] = A
     return padded
 
-def strassen(X, Y):
+def strassen(X, Y, crossover = 2):
     n = len(X)
     # flag to remove padding after multiplication
     padded = False
@@ -39,12 +39,12 @@ def strassen(X, Y):
        padded = True
 
     # base case
-    if n <= 2:
+    if n <= crossover:
         Z = conventional(X, Y)
         # removing excess 0s
-        if padded:
-            # delete last row and column
-            Z = Z[:-1, :-1]
+        # if padded:
+        #     # delete last row and column
+        #     Z = Z[:-1, :-1]
         return Z
 
     # split them
@@ -79,7 +79,7 @@ def strassen(X, Y):
     Z = np.vstack((np.hstack((UL, UR)), np.hstack((LL, LR)))) 
 
     # remove padding
-    Z = Z[:-1, :-1]
+    # Z = Z[:-1, :-1]
 
     return Z
 
@@ -87,8 +87,8 @@ def strassen(X, Y):
 
 # # ----- TESTS -----
 # # coonventional
-# X = np.array([[1,2,3],[3,4,3],[1,2,3]])
-# Y = np.array([[5,6,3],[7,8,3],[1,2,3]])
+X = np.array([[1,2,3],[3,4,3],[1,2,3]])
+Y = np.array([[5,6,3],[7,8,3],[1,2,3]])
 # # X = np.array([[1,2],[3,4]])
 # # Y = np.array([[5,6],[7,8]])
 # # print(conventional(X,Y))
@@ -106,4 +106,4 @@ def strassen(X, Y):
 # # print(np.matrix(Z))
 
 # # strassen
-# print(strassen(X, Y))
+print(strassen(X, Y))
