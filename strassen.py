@@ -84,27 +84,26 @@ def strassen(X, Y):
     return Z
 
 
-# def recursive_matrix_mult(n_matrix):
 
-# ----- TESTS -----
-# coonventional
-X = np.array([[1,2,3],[3,4,3],[1,2,3]])
-Y = np.array([[5,6,3],[7,8,3],[1,2,3]])
-# X = np.array([[1,2],[3,4]])
-# Y = np.array([[5,6],[7,8]])
-# print(conventional(X,Y))
+# # ----- TESTS -----
+# # coonventional
+# X = np.array([[1,2,3],[3,4,3],[1,2,3]])
+# Y = np.array([[5,6,3],[7,8,3],[1,2,3]])
+# # X = np.array([[1,2],[3,4]])
+# # Y = np.array([[5,6],[7,8]])
+# # print(conventional(X,Y))
 
-# padding
-# D = [[1 for o in range(3)] for p in range(3)]
-# D = pad(D)
+# # padding
+# # D = [[1 for o in range(3)] for p in range(3)]
+# # D = pad(D)
 
-# # splitting
-# a, b, c, d = split_matrix(D)
-# print(np.matrix(b))
+# # # splitting
+# # a, b, c, d = split_matrix(D)
+# # print(np.matrix(b))
 
-# # stacking
-# Z = np.vstack((np.hstack((a, b)), np.hstack((c, d))))
-# print(np.matrix(Z))
+# # # stacking
+# # Z = np.vstack((np.hstack((a, b)), np.hstack((c, d))))
+# # print(np.matrix(Z))
 
-# strassen
-print(strassen(X, Y))
+# # strassen
+# print(strassen(X, Y))
