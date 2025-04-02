@@ -84,11 +84,10 @@ def strassen(X, Y, crossover = 2):
     return Z
 
 
-
 # # ----- TESTS -----
 # # coonventional
-X = np.array([[1,2,3],[3,4,3],[1,2,3]])
-Y = np.array([[5,6,3],[7,8,3],[1,2,3]])
+# X = np.array([[1,2,3],[3,4,3],[1,2,3]])
+# Y = np.array([[5,6,3],[7,8,3],[1,2,3]])
 # # X = np.array([[1,2],[3,4]])
 # # Y = np.array([[5,6],[7,8]])
 # # print(conventional(X,Y))
