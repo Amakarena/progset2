@@ -1,14 +1,6 @@
 # Let's use a single source file to upload the progset
 import numpy as np
 
-#n_0 from theoretical approach
-# n = 4
-
-# # creating an n*n matrix 
-# matrix = np.zeros((n, n), dtype=int)
-# print(matrix)
-# print(len(matrix))
-
 # A and B are nxn matrices (how to handle odd case? Add extra row
 # of 0s and column of 0s. Delete extras after calculation and before
 # output)
@@ -27,7 +19,7 @@ def conventional(A, B):
     return np.array(C)
     # print(np.matrix(C))
 
-# A is a matrix
+# pad function for odd n functions
 def pad(A):
     n = len(A)
     padded_size = n + 1
