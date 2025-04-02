@@ -3,7 +3,7 @@ import sys
 import math
 import time
 import random
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 GLOBAL_THRESHOLD = 2
 
@@ -79,14 +79,13 @@ def strassen_multiply(A, B):
 Padding Generalization to arbitrary n - so it includes odds
 ********************************************************************************
 '''
-# Helper function to find the next power of 2 for an arbitrary n
+# Helper function to find the next power of 2 for an arbitrary n, check works w/ odd n
 def next_power_of_two(n):
-    """Return the smallest power of 2 >= n."""
     if n == 0:
         return 1
     return 2 ** math.ceil(math.log2(n))
 
-# Helper function that pads a non-power of 2 function
+# Helper function that pads a non-power of 2 function if called
 def pad_matrix(A, new_size):
     old_size = len(A)
     padded = []
@@ -96,7 +95,7 @@ def pad_matrix(A, new_size):
         padded.append([0]*new_size)
     return padded
 
-# Helper function that unpads the padded new matrix
+# Helper function that unpads the padded new matrix at final output
 def unpad_matrix(M, original_size):
     return [row[:original_size] for row in M[:original_size]]
 
@@ -117,11 +116,12 @@ def strassen_multiply_gen(A, B):
 FINDING BEST THRESHOLD WITH TIMING + Graphing
 ********************************************************************************
 '''
-
+# Changes global threshold when best one found
 def set_strassen_threshold(value):
     global GLOBAL_THRESHOLD
     GLOBAL_THRESHOLD = value
 
+#  Test time for Conventional
 def time_conventional(A, B):
     n = len(A)
     start = time.perf_counter()
@@ -129,6 +129,7 @@ def time_conventional(A, B):
     end = time.perf_counter()
     return end - start
 
+#  Test time for Strassen
 def time_strassen(A, B, threshold):
     set_strassen_threshold(threshold)
     start = time.perf_counter()
@@ -137,54 +138,36 @@ def time_strassen(A, B, threshold):
     return end - start
 
 def compare_strassen_vs_conventional():
-    """
-    Compare conventional vs. Strassen with 5 different thresholds,
-    on matrix sizes [64, 128, 256, 512, 1024].
-    Then plot the results as lines on a single chart.
-    """
-    crossover_candidates = [32, 64] #To change
-
+    # Threshold params. TO EXPERIMENT WITH
+    crossover_candidates = [32, 64]
+    # Dimension sizes. TO EXPERIMENT WITH 
     test_sizes = [64, 128, 256, 512, 1024] # TO change
 
     value_set = [0, 1, 2]
-
     conventional_times = []
     strassen_times = {thr: [] for thr in crossover_candidates}
-
     for size in test_sizes:
         # Generate random A, B (same for each threshold)
         A = [[random.choice(value_set) for _ in range(size)] for _ in range(size)]
         B = [[random.choice(value_set) for _ in range(size)] for _ in range(size)]
 
-        # Time conventional
         conv_time = time_conventional(A, B)
         conventional_times.append(conv_time)
-
         # For each threshold, time Strassen
         for thr in crossover_candidates:
             st_time = time_strassen(A, B, thr)
             strassen_times[thr].append(st_time)
-
-    # ------------------------------------------
-    # Plot: x-axis = test_sizes, y-axis = times
-    # One line for conventional, one line for each threshold
-    # ------------------------------------------
-    plt.figure()  # Single plot with multiple lines
-
-    # Plot conventional
+    
+    # SINGLE Plot w/ ALL algorithms plotted for comparison
+    plt.figure()
     plt.plot(test_sizes, conventional_times, label="Conventional")
-
-    # Plot strassen lines
     for thr in crossover_candidates:
         plt.plot(test_sizes, strassen_times[thr], label=f"Strassen(thr={thr})")
-
     plt.xlabel("Matrix Size (n)")
     plt.ylabel("Time (seconds)")
     plt.title("Conventional vs. Strassen with various thresholds")
     plt.legend()
-
     plt.show()
-
 
 '''
 ********************************************************************************
@@ -192,16 +175,11 @@ COUNTING TRIANGLE VIA A^3 (A^2 * A)
 ********************************************************************************
 '''
 N = 1024
-GLOBAL_THRESHOLD = 64   # base-case dimension for Strassen
+GLOBAL_THRESHOLD = 32   # base-case dimension for Strassen based on analysis above!
 PROBS = [0.01, 0.02, 0.03, 0.04, 0.05]
 
-# Building random adjacency
+# Building random adjacency matrix for undirect. graph
 def build_random_adjacency(n, p):
-    """
-    Returns an n x n adjacency matrix for an undirected graph
-    where each edge is included with probability p.
-    No self-loops.
-    """
     A = [[0]*n for _ in range(n)]
     for i in range(n):
         for j in range(i+1, n):
@@ -212,24 +190,15 @@ def build_random_adjacency(n, p):
 
 # Counting Triangle through strassen
 def count_triangles(A):
-    """
-    1) Compute A^2 = A*A with Strassen
-    2) Then compute A^3 = (A^2)*A
-    3) #triangles = sum diag(A^3)/6
-    """
     n = len(A)
-
     # A^2
     A2 = strassen_multiply_gen(A, A)
     # A^3
     A3 = strassen_multiply_gen(A2, A)
-
-    # sum diagonal
+    
     diag_sum = 0
     for i in range(n):
         diag_sum += A3[i][i]
-
-    # each triangle counted 6 times in A^3 for an undirected graph
     return diag_sum // 6
 
 '''
@@ -237,11 +206,12 @@ def count_triangles(A):
 MAIN
 ********************************************************************************
 '''
-def main():
-    compare_strassen_vs_conventional()
-    
+
+''' COMMENTED OUT For GRADESCOPE --> Threshold Checking and Code below Prints Triangles'''
 # def main():
-#     # precompute binomial(1024, 3)
+#     compare_strassen_vs_conventional()
+
+#     # binomial(1024, 3)
 #     comb_1024_3 = math.comb(N, 3)
 
 #     results = []
@@ -260,67 +230,44 @@ def main():
 #         end_tri = time.perf_counter()
 
 #         print(f"Counted triangles in {end_tri - start_tri:.2f}s")
-
-#         # expected
 #         expected = comb_1024_3 * (p**3)
-
 #         print(f"Actual # triangles: {tri_count},  Expected ~ {expected:.1f}")
-
 #         results.append((p, tri_count, expected))
 
-#     # Example: just print the final table
+#     # Final table
 #     print("\n===== Final Results =====")
 #     print("p\tTriangles\tExpected")
 #     for (p, tri_count, exp) in results:
 #         print(f"{p}\t{tri_count}\t{exp:.1f}")
 
+def main():
+    if len(sys.argv) != 4:
+        print("Usage: {} <flag> <dimension> <inputfile>".format(sys.argv[0]))
+        sys.exit(1)
 
-# -----------------------------
-# MAIN
-#   usage: ./strassen 0 dimension inputfile
-#   read dimension d
-#   read 2*d*d integers => build A, B
-#   compute C = A*B
-#   print diag
-# -----------------------------
+    # parse
+    flag = sys.argv[1]
+    d = int(sys.argv[2])
+    inputfile = sys.argv[3]
 
-# def main():
-#     if len(sys.argv) != 4:
-#         print("Usage: {} <flag> <dimension> <inputfile>".format(sys.argv[0]))
-#         sys.exit(1)
+    # read file for 2*d*d integers
+    with open(inputfile, "r") as f:
+        nums = [int(line.strip()) for line in f if line.strip()]
+    if len(nums) != 2*d*d:
+        print("Error: input file does not have 2*d*d = {} integers.".format(2*d*d))
+        sys.exit(1)
 
-#     # parse
-#     flag = sys.argv[1]           # e.g. '0'
-#     d = int(sys.argv[2])         # dimension
-#     inputfile = sys.argv[3]
+    # Converting Flat Matrices A,B
+    Anums = nums[:d*d]
+    Bnums = nums[d*d:2*d*d]
+    A = [Anums[i*d:(i+1)*d] for i in range(d)]
+    B = [Bnums[i*d:(i+1)*d] for i in range(d)]
 
-#     # read file => 2*d*d integers
-#     with open(inputfile, "r") as f:
-#         nums = [int(line.strip()) for line in f if line.strip()]
-
-#     if len(nums) != 2*d*d:
-#         print("Error: input file does not have 2*d*d = {} integers.".format(2*d*d))
-#         sys.exit(1)
-
-#     # first d*d => matrix A
-#     Anums = nums[:d*d]
-#     # next d*d => matrix B
-#     Bnums = nums[d*d:2*d*d]
-
-#     # convert flat lists => 2D
-#     A = [Anums[i*d:(i+1)*d] for i in range(d)]
-#     B = [Bnums[i*d:(i+1)*d] for i in range(d)]
-
-#     # multiply
-#     # If you want to ensure it works for all d (not just power-of-2), do:
-#     C = strassen_multiply_gen(A, B)
-#     # else you can do:
-#     # C = strassen_multiply(A, B)
-
-#     # print diagonal c[0,0], c[1,1], ... c[d-1,d-1]
-#     # one per line + trailing newline
-#     for i in range(d):
-#         print(C[i][i])
+    # Running through GENERAL (for all values of n) strassen multiply
+    C = strassen_multiply_gen(A, B)
+    # one per line + trailing newline
+    for i in range(d):
+        print(C[i][i])
 
 if __name__ == "__main__":
     main()
