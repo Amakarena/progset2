@@ -141,7 +141,7 @@ def compare_strassen_vs_conventional():
     # Threshold params. TO EXPERIMENT WITH
     crossover_candidates = [32, 64]
     # Dimension sizes. TO EXPERIMENT WITH 
-    test_sizes = [64, 128, 256, 512, 1024] # TO change
+    test_sizes = [257, 515, 1031, 2001] #Try even AND ODD
 
     value_set = [0, 1, 2]
     conventional_times = []
@@ -207,38 +207,57 @@ MAIN
 ********************************************************************************
 '''
 
-''' COMMENTED OUT For GRADESCOPE --> Threshold Checking and Code below Prints Triangles'''
+''' COMMENTED OUT for GRADESCOPE --> Threshold Checking + Prints Triangles + Expected'''
 # def main():
 #     compare_strassen_vs_conventional()
+    # comb_1024_3 = math.comb(N, 3)
+    # results = []
 
-#     # binomial(1024, 3)
-#     comb_1024_3 = math.comb(N, 3)
+    # # Run 5 separate rand. graphs for each p, then average counted triangles
+    # NUM_RUNS = 3
+    # for p in PROBS:
+    #     # times and triangle counts 
+    #     sum_triangles = 0
+    #     sum_build_time = 0.0
+    #     sum_count_time = 0.0
 
-#     results = []
-#     for p in PROBS:
-#         print(f"\n=== p = {p} ===")
-#         # build adjacency
-#         start_build = time.perf_counter()
-#         A = build_random_adjacency(N, p)
-#         end_build = time.perf_counter()
+    #     for _ in range(NUM_RUNS):
+    #         # build adjacency
+    #         start_build = time.perf_counter()
+    #         A = build_random_adjacency(N, p)
+    #         end_build = time.perf_counter()
 
-#         print(f"Built adjacency in {end_build - start_build:.2f}s")
+    #         build_time = end_build - start_build
+    #         sum_build_time += build_time
 
-#         # count triangles
-#         start_tri = time.perf_counter()
-#         tri_count = count_triangles(A)
-#         end_tri = time.perf_counter()
+    #         # coount triangles
+    #         start_count = time.perf_counter()
+    #         tri_count = count_triangles(A)
+    #         end_count = time.perf_counter()
 
-#         print(f"Counted triangles in {end_tri - start_tri:.2f}s")
-#         expected = comb_1024_3 * (p**3)
-#         print(f"Actual # triangles: {tri_count},  Expected ~ {expected:.1f}")
-#         results.append((p, tri_count, expected))
+    #         count_time = end_count - start_count
+    #         sum_count_time += count_time
 
-#     # Final table
-#     print("\n===== Final Results =====")
-#     print("p\tTriangles\tExpected")
-#     for (p, tri_count, exp) in results:
-#         print(f"{p}\t{tri_count}\t{exp:.1f}")
+    #         sum_triangles += tri_count
+
+    #     # Average results and print vs expected
+    #     avg_triangles = sum_triangles / NUM_RUNS
+    #     avg_build = sum_build_time / NUM_RUNS
+    #     avg_count = sum_count_time / NUM_RUNS
+    #     expected = comb_1024_3 * (p**3)
+    #     print(f"\n=== p = {p} ===")
+    #     print(f"Average build adjacency time: {avg_build:.2f}s")
+    #     print(f"Average triangle count time: {avg_count:.2f}s")
+    #     print(f"Average # triangles: {avg_triangles:.1f},  Expected ~ {expected:.1f}")
+
+    #     results.append((p, avg_triangles, expected))
+
+    # # Final table
+    # print("\n===== Final Results (averaged over 5 runs) =====")
+    # print("p\tTriangles\tExpected")
+    # for (p, avg_tri, exp) in results:
+    #     print(f"{p}\t{avg_tri:.1f}\t\t{exp:.1f}")
+
 
 def main():
     if len(sys.argv) != 4:
